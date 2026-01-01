@@ -1,6 +1,6 @@
 # IR Wear Project
 
-![Project Banner]([https://github.com/BGGremlin-Group/IR-wear-Project-/blob/main/img/banner.png])
+![Project Banner][https://github.com/BGGremlin-Group/IR-wear-Project-/blob/main/img/banner.png]
 **By BGGremlin-Group (BGGG)**  
 *Creating Unique Tools for Unique Individuals*
 
