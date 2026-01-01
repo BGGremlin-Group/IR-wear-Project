@@ -1,7 +1,6 @@
 # IR Wear Project
 
-![Project Banner](https://via.placeholder.com/1200x400?text=IR+Wear+Project) <!-- Placeholder for a banner image; replace with actual if available -->
-
+![Project Banner]([https://github.com/BGGremlin-Group/IR-wear-Project-/blob/main/img/banner.png])
 **By BGGremlin-Group (BGGG)**  
 *Creating Unique Tools for Unique Individuals*
 
