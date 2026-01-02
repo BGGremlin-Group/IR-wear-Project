@@ -1,5 +1,11 @@
-### Build References
-And Images of Similar Completed IR Integrated Garments and Build Phases
+### IR Garment Build References
+
+## Images of Completed IR Integrated Garments and Build Phases
+
+Below are example images for reference, where applicable, Each includes a description for alt text.
+
+These are sourced from tutorials and projects similar to the IR Wear Project (e.g., visible LED integrations that can be adapted for IR LEDs, and specific IR hoodie examples).
+
 
 ### Completed Garments
 ![Camera Shy Hoodie by Mac Pierce - Completed Front View](https://pbs.twimg.com/media/FqyQqL0aAAEL8Ng.jpg)  
