@@ -94,7 +94,7 @@ In summary, this setup equips you with a versatile, upgradable privacy arsenalâ€
 
 ## Contributing
 
-We welcome contributions! Fork the repo, make your changes, and submit a pull request. Focus on improvements to designs, new garment ideas, or enhanced features like automation.
+We welcome contributions! Fork the repo, make your changes, and submit a pull request. Focus on improvements to designs, new garment ideas, or privacy enhancing features.
 
 ## License
 
