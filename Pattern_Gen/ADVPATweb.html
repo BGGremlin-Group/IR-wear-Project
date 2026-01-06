@@ -167,16 +167,33 @@
             return seed / 233280;
         }
 
-        // Color functions – fix malformed templates
+        // Color functions – FIXED malformed templates
         function getColor(isColor) {
             if (!isColor) {
-                // produce grayscale color
                 const g = Math.floor(seededRandom() * 256);
-                return `rgb(${g},${g},${g})`;
+                return `rgb(\( {g}, \){g},${g})`;
             }
             const palette = document.getElementById('colorPalette').value;
             currentPalette = palette;
             switch (palette) {
+                case 'highcontrast': return seededRandom() > 0.5 ? '#000000' : '#FFFFFF';
+                case 'subtle': 
+                    const s = Math.floor(80 + seededRandom() * 100);
+                    return `rgb(\( {s}, \){s},${s})`;
+                case 'earthtones': 
+                    return `hsl(\( {20 + seededRandom() * 60}, \){30 + seededRandom() * 50}%,${20 + seededRandom() * 50}%)`;
+                case 'psychedelic': return `hsl(${seededRandom() * 360},100%,50%)`;
+                case 'neon': return `hsl(${180 + seededRandom() * 180},100%,60%)`;
+                case 'thermal': 
+                    const t = seededRandom();
+                    return t < 0.33 ? '#FF00FF' : t < 0.66 ? '#FFFFFF' : '#0000FF';
+                case 'irsim': return '#FFFFFF';
+                default: return `hsl(${seededRandom() * 360},80%,60%)`;
+            }
+        }
+
+        function getThreeColor(isColor) {
+            // Fixed HSL parsing issue – convert HSL to RGB if needed
                 case 'highcontrast':
                     return seededRandom() > 0.5 ? '#000000' : '#FFFFFF';
                 case 'subtle':
@@ -241,6 +258,7 @@
                     const h = parseFloat(match[1]);
                     const s = parseFloat(match[2]) / 100;
                     const l = parseFloat(match[3]) / 100;
+                    const rgb = hsvToRgb(h, s, l); // reuse hsvToRgb for hsl approximation
                     const rgb = hslToRgb(h, s, l);
                     return (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
                 }
@@ -259,6 +277,13 @@
             const q = v * (1 - s * f);
             const t = v * (1 - s * (1 - f));
             switch (i % 6) {
+                case 0: r = v; g = t; b = p; break;
+                case 1: r = q; g = v; b = p; break;
+                case 2: r = p; g = v; b = t; break;
+                case 3: r = p; g = q; b = v; break;
+                case 4: r = t; g = p; b = v; break;
+                case 5: r = v; g = p; b = q; break;
+                default: r = g = b = 0;
                 case 0:
                     r = v;
                     g = t;
@@ -360,6 +385,12 @@
                     const clamped = Math.max(0, Math.min(255, val));
                     if (isColor) {
                         data[i] = clamped;
+                        data[i+1] = Math.floor(seededRandom() * 255 + pert);
+                        data[i+2] = Math.floor(seededRandom() * 255 + pert);
+                    } else {
+                        data[i] = data[i+1] = data[i+2] = clamped;
+                    }
+                    data[i+3] = 255;
                         data[i + 1] = Math.floor(seededRandom() * 255 + pert);
                         data[i + 2] = Math.floor(seededRandom() * 255 + pert);
                     } else {
@@ -419,6 +450,13 @@
                     const perturbation = Math.sin(i / 4) * scale + (seededRandom() * scale * 2 - scale);
                     if (isColor) {
                         data[i] = Math.floor(seededRandom() * 255 + perturbation + 256) % 256;
+                        data[i+1] = Math.floor(seededRandom() * 255 + perturbation + 256) % 256;
+                        data[i+2] = Math.floor(seededRandom() * 255 + perturbation + 256) % 256;
+                    } else {
+                        const g = Math.floor(seededRandom() * 255 + perturbation + 256) % 256;
+                        data[i] = data[i+1] = data[i+2] = g;
+                    }
+                    data[i+3] = 255;
                         data[i + 1] = Math.floor(seededRandom() * 255 + perturbation + 256) % 256;
                         data[i + 2] = Math.floor(seededRandom() * 255 + perturbation + 256) % 256;
                     } else {
@@ -447,6 +485,16 @@
                         if (x >= 0 && x < size && y >= 0 && y < size) {
                             const idx = (y * size + x) * 4;
                             const colorIndex = (ring + angle / 10) % 4;
+                            const color = isColor ? (
+                                colorIndex === 0 ? [255, 0, 0] :
+                                colorIndex === 1 ? [0, 255, 0] :
+                                colorIndex === 2 ? [0, 0, 255] :
+                                [255, 255, 0]
+                            ) : [(ring % 2 === 0 ? 100 : 200), (ring % 2 === 0 ? 100 : 200), (ring % 2 === 0 ? 100 : 200)];
+                            data[idx] = color[0];
+                            data[idx+1] = color[1];
+                            data[idx+2] = color[2];
+                            data[idx+3] = 255;
                             const color = isColor
                                 ? (colorIndex === 0
                                     ? [255, 0, 0]
@@ -481,6 +529,10 @@
                             const r = Math.floor(seededRandom() * 255 + brightness + 256) % 256;
                             const g = Math.floor(seededRandom() * 255 + brightness + 256) % 256;
                             const b = Math.floor(seededRandom() * 255 + brightness + 256) % 256;
+                            ctx.fillStyle = `rgb(\( {r}, \){g},${b})`;
+                        } else {
+                            const gray = Math.floor(seededRandom() * 255 + brightness + 256) % 256;
+                            ctx.fillStyle = `rgb(\( {gray}, \){gray},${gray})`;
                             ctx.fillStyle = `rgb(${r},${g},${b})`;
                         } else {
                             const gray = Math.floor(seededRandom() * 255 + brightness + 256) % 256;
@@ -499,6 +551,16 @@
                 ctx.lineJoin = 'round';
                 ctx.lineWidth = 3 + comp * 4;
                 ctx.strokeStyle = getColor(isColor, 'highcontrast');
+                const colors = isColor ? ['#4f9bf7', '#c0d8fc', '#87b7ff'] : ['#bbbbbb', '#999999', '#dddddd'];
+                const edge = 30 + comp * 30;
+                const ch = edge * Math.sqrt(3) / 2;
+                const chb = edge / 2;
+                function drawSide(x0,y0,x1,y1,x2,y2,x3,y3,color) {
+                    ctx.beginPath();
+                    ctx.moveTo(x0,y0);
+                    ctx.lineTo(x1,y1);
+                    ctx.lineTo(x2,y2);
+                    ctx.lineTo(x3,y3);
                 const colors = isColor
                     ? ['#4f9bf7', '#c0d8fc', '#87b7ff']
                     : ['#bbbbbb', '#999999', '#dddddd'];
@@ -519,6 +581,9 @@
                 const cubes = 3 + Math.floor(comp * 3);
                 for (let i = 0; i < cubes; i++) {
                     const offset = i * 100;
+                    drawSide(offset,300,offset + chb,300 - ch,offset + edge,300,offset + chb,300 + ch,colors[0]);
+                    drawSide(offset,300,offset - edge,300,offset - chb,300 - ch,offset + chb,300 - ch,colors[1]);
+                    drawSide(offset,300,offset + chb,300 + ch,offset - chb,300 + ch,offset - edge,300,colors[2]);
                     drawSide(offset, 300, offset + chb, 300 - ch, offset + edge, 300, offset + chb, 300 + ch, colors[0]);
                     drawSide(offset, 300, offset - edge, 300, offset - chb, 300 - ch, offset + chb, 300 - ch, colors[1]);
                     drawSide(offset, 300, offset + chb, 300 + ch, offset - chb, 300 + ch, offset - edge, 300, colors[2]);
@@ -573,6 +638,8 @@
                 const size = 30 + (1 - comp) * 50;
                 for (let y = 0; y < h; y += size) {
                     for (let x = 0; x < w; x += size) {
+                        const gray = ((Math.floor(x / size) + Math.floor(y / size)) % 2 === 0) ? 140 : 100;
+                        ctx.fillStyle = `rgb(\( {gray}, \){gray},${gray})`;
                         const gray = (Math.floor(x / size) + Math.floor(y / size)) % 2 === 0 ? 140 : 100;
                         ctx.fillStyle = `rgb(${gray},${gray},${gray})`;
                         ctx.fillRect(x, y, size, size);
@@ -589,6 +656,7 @@
                 const size = 15 + (1 - comp) * 20;
                 for (let y = 0; y < h; y += size) {
                     for (let x = 0; x < w; x += size) {
+                        ctx.fillStyle = ((Math.floor(x / size) + Math.floor(y / size)) % 2 === 0) ? getColor(isColor, 'highcontrast') : getColor(isColor, 'subtle');
                         ctx.fillStyle = (Math.floor(x / size) + Math.floor(y / size)) % 2 === 0 ? getColor(isColor, 'highcontrast') : getColor(isColor, 'subtle');
                         ctx.fillRect(x, y, size, size);
                     }
@@ -617,6 +685,13 @@
                 const ox = -0.5;
                 const oy = 0;
                 for (let py = 0; py < h; py++) {
+                    const cy = oy + (py - h/2) / (h/2 * zoom);
+                    for (let px = 0; px < w; px++) {
+                        const cx = ox + (px - w/2) / (w/2 * zoom);
+                        let x = 0, y = 0, iter = 0;
+                        while (x*x + y*y <= 4 && iter < maxIter) {
+                            const xt = x*x - y*y + cx;
+                            y = 2*x*y + cy;
                     const cy = oy + (py - h / 2) / (h / 2 * zoom);
                     for (let px = 0; px < w; px++) {
                         const cxCoord = ox + (px - w / 2) / (w / 2 * zoom);
@@ -631,6 +706,15 @@
                         }
                         const idx = (py * w + px) * 4;
                         if (iter === maxIter) {
+                            data[idx] = data[idx+1] = data[idx+2] = 0;
+                        } else {
+                            const hue = iter * 360 / maxIter;
+                            const rgb = isColor ? hsvToRgb(hue, 1, 1) : [Math.floor(iter * 255 / maxIter), Math.floor(iter * 255 / maxIter), Math.floor(iter * 255 / maxIter)];
+                            data[idx] = rgb[0];
+                            data[idx+1] = rgb[1];
+                            data[idx+2] = rgb[2];
+                        }
+                        data[idx+3] = 255;
                             data[idx] = data[idx + 1] = data[idx + 2] = 0;
                         } else {
                             const hue = (iter * 360) / maxIter;
@@ -655,6 +739,9 @@
                     for (let px = 0; px < w; px++) {
                         let x = (px / w - 0.5) * 3;
                         let iter = 0;
+                        while (x*x + y*y <= 4 && iter < maxIter) {
+                            const xt = x*x - y*y + cr;
+                            y = 2*x*y + ci;
                         while (x * x + y * y <= 4 && iter < maxIter) {
                             const xt = x * x - y * y + cr;
                             y = 2 * x * y + ci;
@@ -663,6 +750,15 @@
                         }
                         const idx = (py * w + px) * 4;
                         if (iter === maxIter) {
+                            data[idx] = data[idx+1] = data[idx+2] = 0;
+                        } else {
+                            const hue = iter * 360 / maxIter + 90;
+                            const rgb = isColor ? hsvToRgb(hue, 1, 1) : [Math.floor(iter * 255 / maxIter), Math.floor(iter * 255 / maxIter), Math.floor(iter * 255 / maxIter)];
+                            data[idx] = rgb[0];
+                            data[idx+1] = rgb[1];
+                            data[idx+2] = rgb[2];
+                        }
+                        data[idx+3] = 255;
                             data[idx] = data[idx + 1] = data[idx + 2] = 0;
                         } else {
                             const hue = iter * 360 / maxIter + 90;
@@ -677,6 +773,7 @@
                 ctx.putImageData(img, 0, 0);
             },
             sierpinski: (ctx, isColor, w, h, comp) => {
+                const levels = 4 + Math.floor(comp * 8);
                 // Cap recursion depth to prevent call stack overflow
                 const calculated = 4 + Math.floor(comp * 8);
                 const maxDepth = 7;
@@ -703,6 +800,8 @@
                     }
                 }
                 const side = Math.min(w, h) * 0.8;
+                const height = side * Math.sqrt(3) / 2;
+                recurse(w / 2 - side / 2, h / 2 + height / 3, w / 2 + side / 2, h / 2 + height / 3, w / 2, h / 2 - 2 * height / 3, levels);
                 const height = (side * Math.sqrt(3)) / 2;
                 recurse(
                     w / 2 - side / 2,
@@ -729,6 +828,10 @@
                         const dy = y2 - y1;
                         const x3 = x1 + dx / 3;
                         const y3 = y1 + dy / 3;
+                        const x4 = x1 + dx / 2 + (dy * Math.sqrt(3) / 6);
+                        const y4 = y1 + dy / 2 - (dx * Math.sqrt(3) / 6);
+                        const x5 = x1 + 2 * dx / 3;
+                        const y5 = y1 + 2 * dy / 3;
                         const x4 = x1 + dx / 2 + (dy * Math.sqrt(3)) / 6;
                         const y4 = y1 + dy / 2 - (dx * Math.sqrt(3)) / 6;
                         const x5 = x1 + (2 * dx) / 3;
@@ -740,6 +843,10 @@
                     }
                 }
                 const side = Math.min(w, h) * 0.8;
+                const height = side * Math.sqrt(3) / 2;
+                kochLine(w / 2 - side / 2, h / 2 + height / 3, w / 2 + side / 2, h / 2 + height / 3, levels);
+                kochLine(w / 2 + side / 2, h / 2 + height / 3, w / 2, h / 2 - 2 * height / 3, levels);
+                kochLine(w / 2, h / 2 - 2 * height / 3, w / 2 - side / 2, h / 2 + height / 3, levels);
                 const height = (side * Math.sqrt(3)) / 2;
                 kochLine(w / 2 - side / 2, h / 2 + height / 3, w / 2 + side / 2, h / 2 + height / 3, levels);
                 kochLine(w / 2 + side / 2, h / 2 + height / 3, w / 2, h / 2 - (2 * height) / 3, levels);
@@ -864,6 +971,7 @@
                         for (let i = 0; i < waves; i++) {
                             const angle = (i / waves) * Math.PI * 2;
                             const freq = 5 + comp * 10;
+                            value += Math.sin(px * Math.cos(angle) * freq / w + py * Math.sin(angle) * freq / h);
                             value += Math.sin((px * Math.cos(angle) * freq) / w + (py * Math.sin(angle) * freq) / h);
                         }
                         value = (value + waves) / (2 * waves);
@@ -873,6 +981,12 @@
                             const hue = value * 360;
                             const rgb = hsvToRgb(hue, 1, 1);
                             data[idx] = rgb[0];
+                            data[idx+1] = rgb[1];
+                            data[idx+2] = rgb[2];
+                        } else {
+                            data[idx] = data[idx+1] = data[idx+2] = gray;
+                        }
+                        data[idx+3] = 255;
                             data[idx + 1] = rgb[1];
                             data[idx + 2] = rgb[2];
                         } else {
@@ -903,6 +1017,7 @@
                 const data = img.data;
                 for (let py = 0; py < h; py++) {
                     for (let px = 0; px < w; px++) {
+                        const dist = Math.sqrt((px - w/2)**2 + (py - h/2)**2);
                         const dist = Math.sqrt((px - w / 2) ** 2 + (py - h / 2) ** 2);
                         const value = Math.sin(dist / 10 + steps / 10) * Math.sin(px / 20) * Math.sin(py / 20);
                         const gray = Math.floor((value + 1) * 128);
@@ -911,6 +1026,12 @@
                             const hue = gray * 1.4;
                             const rgb = hsvToRgb(hue, 1, 1);
                             data[idx] = rgb[0];
+                            data[idx+1] = rgb[1];
+                            data[idx+2] = rgb[2];
+                        } else {
+                            data[idx] = data[idx+1] = data[idx+2] = gray;
+                        }
+                        data[idx+3] = 255;
                             data[idx + 1] = rgb[1];
                             data[idx + 2] = rgb[2];
                         } else {
@@ -930,6 +1051,12 @@
                         const idx = (py * w + px) * 4;
                         if (isColor) {
                             data[idx] = value;
+                            data[idx+1] = value / 2;
+                            data[idx+2] = 0;
+                        } else {
+                            data[idx] = data[idx+1] = data[idx+2] = value;
+                        }
+                        data[idx+3] = 255;
                             data[idx + 1] = value / 2;
                             data[idx + 2] = 0;
                         } else {
@@ -961,6 +1088,7 @@
                 for (let i = 0; i < count; i++) {
                     const size = 0.4 + seededRandom() * 1.8;
                     const geo = new THREE.BoxGeometry(size, size * (0.5 + seededRandom() * 1.5), size);
+                    const mat = new THREE.MeshStandardMaterial({color: getThreeColor(true), metalness: 0.2 + seededRandom() * 0.4, roughness: 0.3 + seededRandom() * 0.5});
                     const mat = new THREE.MeshStandardMaterial({
                         color: getThreeColor(true),
                         metalness: 0.2 + seededRandom() * 0.4,
@@ -980,12 +1108,14 @@
                     points.push(new THREE.Vector3((seededRandom() - 0.5) * 16, (seededRandom() - 0.5) * 16, (seededRandom() - 0.5) * 10));
                 }
                 const geo = new THREE.BufferGeometry().setFromPoints(points);
+                const mat = new THREE.PointsMaterial({color: 0x00ffcc, size: 0.2});
                 const mat = new THREE.PointsMaterial({ color: 0x00ffcc, size: 0.2 });
                 scene.add(new THREE.Points(geo, mat));
             },
             plasma3d: (scene) => {
                 const geo = new THREE.PlaneGeometry(15, 15, 128, 128);
                 geo.rotateX(-Math.PI / 2);
+                const mat = new THREE.MeshStandardMaterial({color: 0x00ffcc, wireframe: true, emissive: 0x00ffcc, emissiveIntensity: 0.8});
                 const mat = new THREE.MeshStandardMaterial({
                     color: 0x00ffcc,
                     wireframe: true,
@@ -1000,6 +1130,7 @@
                 const count = 8 + Math.floor(comp * 16);
                 for (let i = 0; i < count; i++) {
                     const geo = new THREE.SphereGeometry(0.8 + seededRandom() * 1.2, 32, 32);
+                    const mat = new THREE.MeshStandardMaterial({color: getThreeColor(true), transparent: true, opacity: 0.6});
                     const mat = new THREE.MeshStandardMaterial({
                         color: getThreeColor(true),
                         transparent: true,
@@ -1017,11 +1148,14 @@
                     points.push(new THREE.Vector3((seededRandom() - 0.5) * 20, (seededRandom() - 0.5) * 20, (seededRandom() - 0.5) * 20));
                 }
                 const geo = new THREE.BufferGeometry().setFromPoints(points);
+                const mat = new THREE.PointsMaterial({color: 0x00ffcc, size: 0.05});
                 const mat = new THREE.PointsMaterial({ color: 0x00ffcc, size: 0.05 });
                 scene.add(new THREE.Points(geo, mat));
             }
         };
 
+        // Fixed 2D-only pattern selection for combine mode
+        const twoDPatterns = Object.keys(patternTypes).filter(key => patternTypes[key].length === 5);
         // Select 2D-only patterns (i.e., functions expecting 5 args) for multi-layer combine mode
         const twoDPatterns = Object.keys(patternTypes).filter((key) => patternTypes[key].length === 5);
 
@@ -1124,6 +1258,10 @@
                 draw(bwCtx, false);
             }
 
+            // Tiling implementation
+            if (tile && tileCount > 1) {
+                const tileW = w / tileCount;
+                const tileH = h / tileCount;
             // Fabric tiling preview
             if (tile && tileCount > 1) {
                 const tileW = w / tileCount;
@@ -1168,6 +1306,8 @@
 
         function exportPNG(id) {
             const canvas = document.getElementById(id);
+            const a = document.createElement('a');
+            a.download = `\( {id}_irwear_ \){Date.now()}.png`;
             if (!canvas || typeof canvas.toDataURL !== 'function') {
                 console.warn('Canvas not found or unsupported for PNG export:', id);
                 return;
@@ -1181,6 +1321,17 @@
 
         function exportSVG(id) {
             const canvas = document.getElementById(id);
+            const dataURL = canvas.toDataURL('image/png');
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="\( {canvas.width}" height=" \){canvas.height}">
+  <image href="\( {dataURL}" width=" \){canvas.width}" height="${canvas.height}"/>
+</svg>`;
+            const blob = new Blob([svg], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.download = `\( {id}_irwear_ \){Date.now()}.svg`;
+            a.href = url;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
             if (!canvas || typeof canvas.toDataURL !== 'function') {
                 console.warn('Canvas not found or unsupported for SVG export:', id);
                 return;
@@ -1212,4 +1363,5 @@
         };
     </script>
 </body>
+</html>
 </html>
