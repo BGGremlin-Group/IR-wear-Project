@@ -1,0 +1,80 @@
+{
+  "name": "D_Default1",
+  "description": "Constantly cycles 12 attack patterns across LED groups - half doing one attack while other half does another. Heavy flicker/rolling shutter emphasis with randomized sequencing",
+  "type": "orchestration",
+  "severity": "critical",
+  "flip_flop_enabled": true,
+  "sequence": [
+    {"group": 0, "intensity": 255, "duration_ms": 50, "notes": "AGC_LOCK_HAT_START"},
+    {"group": 1, "intensity": 200, "duration_ms": 100, "notes": "FLICKER_HOODIE_START"},
+    {"group": 2, "intensity": 255, "duration_ms": 50, "notes": "AGC_LOCK_PANTS"},
+    {"group": 3, "intensity": 200, "duration_ms": 100, "notes": "FLICKER_SHOES"},
+    
+    {"group": 0, "intensity": 0, "duration_ms": 50, "notes": "AGC_LOCK_PHASE2"},
+    {"group": 1, "intensity": 200, "duration_ms": 100, "notes": "FLICKER_PHASE2"},
+    {"group": 2, "intensity": 0, "duration_ms": 50, "notes": "AGC_LOCK_PHASE3"},
+    {"group": 3, "intensity": 200, "duration_ms": 100, "notes": "FLICKER_PHASE3"},
+    
+    {"group": 0, "intensity": 255, "duration_ms": 5000, "notes": "AGC_LOCK_FINAL_HAT"},
+    {"group": 1, "intensity": 200, "duration_ms": 100, "notes": "FLICKER_CONT_HOODIE"},
+    {"group": 2, "intensity": 255, "duration_ms": 5000, "notes": "AGC_LOCK_FINAL_PANTS"},
+    {"group": 3, "intensity": 200, "duration_ms": 100, "notes": "FLICKER_CONT_SHOES"},
+    
+    {"group": 0, "intensity": 0, "duration_ms": 2000, "notes": "PAUSE_HAT"},
+    {"group": 1, "intensity": 0, "duration_ms": 2000, "notes": "PAUSE_HOODIE"},
+    {"group": 2, "intensity": 0, "duration_ms": 2000, "notes": "PAUSE_PANTS"},
+    {"group": 3, "intensity": 0, "duration_ms": 2000, "notes": "PAUSE_SHOES"},
+    
+    {"group": 4, "intensity": 255, "duration_ms": 5000, "notes": "SATURATION_ALL"},
+    
+    {"group": 0, "intensity": 0, "duration_ms": 1000, "notes": "RESET_HAT"},
+    {"group": 1, "intensity": 0, "duration_ms": 1000, "notes": "RESET_HOODIE"},
+    
+    {"group": 0, "intensity": 220, "duration_ms": 500, "notes": "ALPR_HAT"},
+    {"group": 1, "intensity": 180, "duration_ms": 100, "notes": "FLICKER_HOODIE"},
+    {"group": 2, "intensity": 180, "duration_ms": 100, "notes": "FLICKER_PANTS"},
+    {"group": 3, "intensity": 220, "duration_ms": 500, "notes": "ALPR_SHOES"},
+    
+    {"group": 0, "intensity": 0, "duration_ms": 1500, "notes": "FLICKER_PREPTZ"},
+    {"group": 1, "intensity": 200, "duration_ms": 100, "notes": "FLICKER_RAPID_HOOD"},
+    {"group": 2, "intensity": 200, "duration_ms": 100, "notes": "FLICKER_RAPID_PANT"},
+    {"group": 3, "intensity": 0, "duration_ms": 1500, "notes": "FLICKER_PREPTZ2"},
+    
+    {"group": 0, "intensity": 200, "duration_ms": 100, "notes": "PTZ_JAM_HAT"},
+    {"group": 1, "intensity": 200, "duration_ms": 100, "notes": "PTZ_JAM_HOOD"},
+    {"group": 2, "intensity": 200, "duration_ms": 100, "notes": "PTZ_JAM_PANTS"},
+    {"group": 3, "intensity": 200, "duration_ms": 100, "notes": "PTZ_JAM_SHOES"},
+    
+    {"group": 0, "intensity": 0, "duration_ms": 100, "notes": "PTZ_GAP_HAT"},
+    {"group": 1, "intensity": 0, "duration_ms": 100, "notes": "PTZ_GAP_HOOD"},
+    
+    {"group": 0, "intensity": 180, "duration_ms": 200, "notes": "PTZ_SLOW_HAT"},
+    {"group": 1, "intensity": 180, "duration_ms": 200, "notes": "PTZ_SLOW_HOOD"},
+    {"group": 2, "intensity": 180, "duration_ms": 200, "notes": "PTZ_SLOW_PANTS"},
+    {"group": 3, "intensity": 180, "duration_ms": 200, "notes": "PTZ_SLOW_SHOES"},
+    
+    {"group": 4, "intensity": 255, "duration_ms": 3000, "notes": "FACE_DAZZLE_INTENSE_ALL"},
+    
+    {"group": 0, "intensity": 0, "duration_ms": 2000, "notes": "COOLDOWN_HAT"},
+    
+    {"group": 0, "intensity": 220, "duration_ms": 100, "notes": "ROLLING_SHUT_SLOW_HAT"},
+    {"group": 1, "intensity": 255, "duration_ms": 3000, "notes": "FACE_DAZZLE_HOODIE"},
+    {"group": 2, "intensity": 220, "duration_ms": 100, "notes": "ROLLING_SHUT_SLOW_PANTS"},
+    {"group": 3, "intensity": 255, "duration_ms": 3000, "notes": "FACE_DAZZLE_SHOES"},
+    
+    {"group": 0, "intensity": 0, "duration_ms": 1000, "notes": "BREATHER_HAT"},
+    
+    {"group": 0, "intensity": 150, "duration_ms": 1500, "notes": "SENSOR_PARTIAL_HAT"},
+    {"group": 1, "intensity": 150, "duration_ms": 1500, "notes": "SENSOR_PARTIAL_HOOD"},
+    {"group": 2, "intensity": 150, "duration_ms": 1500, "notes": "SENSOR_PARTIAL_PANTS"},
+    {"group": 3, "intensity": 150, "duration_ms": 1500, "notes": "SENSOR_PARTIAL_SHOES"},
+    
+    {"group": 4, "intensity": 0, "duration_ms": 500, "notes": "FINAL_RESET"}
+  ],
+  "repeat": 99,
+  "target_cameras": ["All_supported_platforms"],
+  "effective_range_meters": 3.0,
+  "power_consumption_watts": 18.0,
+  "expected_result": "Constantly rotating dual-phase attacks. Half the LED array performs high-intensity camera attacks while other half performs flicker/rolling shutter. Creates layered corruption effect.",
+  "limitations": "High power consumption. Complex sequence may cause timing drift. Requires robust LED thermal management."
+}
