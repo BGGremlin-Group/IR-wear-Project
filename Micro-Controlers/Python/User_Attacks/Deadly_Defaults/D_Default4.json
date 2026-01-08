@@ -1,0 +1,34 @@
+{
+  "name": "D_Default4",
+  "description": "RANDOMIZED UNPREDICTABLE: Attack sequence, intensity, duration, and group selection are all randomized each cycle. No pattern repeats. Defeats adaptive countermeasures. Runs until manual stop.",
+  "type": "orchestration",
+  "severity": "critical",
+  "flip_flop_enabled": true,
+  "randomization": {
+    "intensity_min": 200,
+    "intensity_max": 255,
+    "duration_min_ms": 50,
+    "duration_max_ms": 8000,
+    "group_shuffle": true,
+    "attack_shuffle": true
+  },
+  "sequence": [
+    {"group": "RANDOM", "intensity": "RANDOM", "duration_ms": "RANDOM", "notes": "AGC_LOCK_RAND"},
+    {"group": "RANDOM", "intensity": "RANDOM", "duration_ms": "RANDOM", "notes": "FLICKER_RAND"},
+    {"group": "RANDOM", "intensity": "RANDOM", "duration_ms": "RANDOM", "notes": "SATURATION_RAND"},
+    {"group": "RANDOM", "intensity": "RANDOM", "duration_ms": "RANDOM", "notes": "ALPR_RAND"},
+    {"group": "RANDOM", "intensity": "RANDOM", "duration_ms": "RANDOM", "notes": "PTZ_JAM_RAND"},
+    {"group": "RANDOM", "intensity": "RANDOM", "duration_ms": "RANDOM", "notes": "ROLLING_SLOW_RAND"},
+    {"group": "RANDOM", "intensity": "RANDOM", "duration_ms": "RANDOM", "notes": "FACE_DAZZLE_RAND"},
+    {"group": "RANDOM", "intensity": "RANDOM", "duration_ms": "RANDOM", "notes": "SENSOR_PARTIAL_RAND"},
+    {"group": "RANDOM", "intensity": 255, "duration_ms": "RANDOM", "notes": "MAX_ATTACK_RAND"},
+    {"group": "RANDOM", "intensity": 200, "duration_ms": "RANDOM", "notes": "MEDIUM_ATTACK_RAND"}
+  ],
+  "repeat": 0,
+  "adaptive_countermeasure_resistance": "High",
+  "target_cameras": ["All, especially AI-protected systems"],
+  "effective_range_meters": 3.5,
+  "power_consumption_watts": "VARIABLE 18-24W",
+  "expected_result": "Each cycle is completely unique. Attack pattern cannot be learned or filtered by adaptive AI. Creates unpredictable corruption across all camera subsystems simultaneously. Thermal effects are also randomized, preventing thermal shutdown prediction.",
+  "limitations": "Requires firmware randomization support. Higher processing overhead. May cause LED driver instability due to rapid intensity swings. Not recommended for battery operation due to unpredictable power draw."
+}
