@@ -1,0 +1,46 @@
+{
+  "name": "D_Default3",
+  "description": "THERMAL STRESS PATTERN: Alternates between maximum saturation and rapid flicker to push LED array to thermal limits. Deliberately stresses components. Runs until thermal shutdown or manual stop.",
+  "type": "orchestration",
+  "severity": "critical",
+  "flip_flop_enabled": true,
+  "thermal_stress_test": true,
+  "sequence": [
+    {"group": 4, "intensity": 255, "duration_ms": 30000, "notes": "MAX_SATURATION_ALL_30SEC"},
+    
+    {"group": 0, "intensity": 0, "duration_ms": 5000, "notes": "COOLDOWN_HAT"},
+    {"group": 1, "intensity": 0, "duration_ms": 5000, "notes": "COOLDOWN_HOODIE"},
+    {"group": 2, "intensity": 0, "duration_ms": 5000, "notes": "COOLDOWN_PANTS"},
+    {"group": 3, "intensity": 0, "duration_ms": 5000, "notes": "COOLDOWN_SHOES"},
+    
+    {"group": 0, "intensity": 255, "duration_ms": 100, "notes": "FLICKER_RAPID_HAT"},
+    {"group": 1, "intensity": 255, "duration_ms": 30000, "notes": "SATURATION_HOODIE_MAX"},
+    {"group": 2, "intensity": 255, "duration_ms": 100, "notes": "FLICKER_RAPID_PANTS"},
+    {"group": 3, "intensity": 255, "duration_ms": 30000, "notes": "SATURATION_SHOES_MAX"},
+    
+    {"group": 0, "intensity": 255, "duration_ms": 20000, "notes": "AGC_EXTENDED_HAT"},
+    {"group": 1, "intensity": 255, "duration_ms": 100, "notes": "FLICKER_HOODIE"},
+    {"group": 2, "intensity": 255, "duration_ms": 20000, "notes": "AGC_EXTENDED_PANTS"},
+    {"group": 3, "intensity": 255, "duration_ms": 100, "notes": "FLICKER_SHOES"},
+    
+    {"group": 4, "intensity": 255, "duration_ms": 45000, "notes": "TOTAL_BURNOUT_PHASE_ALL"},
+    
+    {"group": 0, "intensity": 255, "duration_ms": 50, "notes": "MICRO_PULSE_HAT"},
+    {"group": 1, "intensity": 0, "duration_ms": 50, "notes": "MICRO_REST_HOODIE"},
+    {"group": 2, "intensity": 255, "duration_ms": 50, "notes": "MICRO_PULSE_PANTS"},
+    {"group": 3, "intensity": 0, "duration_ms": 50, "notes": "MICRO_REST_SHOES"},
+    
+    {"group": 0, "intensity": 0, "duration_ms": 50, "notes": "MICRO_REST_HAT"},
+    {"group": 1, "intensity": 255, "duration_ms": 50, "notes": "MICRO_PULSE_HOODIE"},
+    {"group": 2, "intensity": 0, "duration_ms": 50, "notes": "MICRO_REST_PANTS"},
+    {"group": 3, "intensity": 255, "duration_ms": 50, "notes": "MICRO_PULSE_SHOES"}
+  ],
+  "repeat": 0,
+  "thermal_limit_celsius": 70,
+  "safety_override": "Disabled for stress test",
+  "target_cameras": ["All"],
+  "effective_range_meters": 4.0,
+  "power_consumption_watts": 24.0,
+  "expected_result": "Alternates 30-45 second saturation burns with rapid flicker phases. Flip-flops between groups to ensure no cooling. Designed to reach thermal shutdown within 10-15 minutes. LED lifespan reduced by 50% per 30-minute session.",
+  "limitations": "WILL cause permanent LED degradation. Battery life reduced to 1-2 hours. May trigger LiPo protection circuit. Thermal runaway risk if cooling fails. Use only for short-duration critical operations."
+}
