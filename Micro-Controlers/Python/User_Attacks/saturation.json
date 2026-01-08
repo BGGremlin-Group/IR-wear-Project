@@ -1,0 +1,16 @@
+{
+  "name": "Sensor_Saturation_Blast",
+  "description": "Sustained 5-second full-power IR saturates CMOS sensor photodiodes completely",
+  "type": "camera_attack",
+  "severity": "high",
+  "sequence": [
+    {"group": 4, "intensity": 255, "duration_ms": 5000, "jitter_percent": 0}
+  ],
+  "repeat": 1,
+  "target_cameras": ["All IR-sensitive cameras"],
+  "verified_on_hardware": ["Sony_IMX174", "Sony_IMX335", "Sony_IMX226"],
+  "effective_range_meters": 5.0,
+  "power_consumption_watts": 24.0,
+  "expected_result": "Entire sensor array saturates, producing pure white video. Effect lasts as long as IR is active. Immediate recovery when stopped.",
+  "limitations": "Requires line-of-sight. Dome cameras with IR coating need closer range (2-3m). Ineffective on thermal cameras."
+}
