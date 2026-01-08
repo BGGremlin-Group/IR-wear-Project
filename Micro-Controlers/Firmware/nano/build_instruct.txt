@@ -1,0 +1,13 @@
+Build Instructions for Arduino Nano:
+1. 
+Install Arduino IDE
+2. 
+Select Tools → Board → Arduino Nano
+3. 
+Select Tools → Processor → ATmega328P (Old Bootloader) if using clone
+4. 
+Select correct Port
+5. 
+Click Sketch → Export Compiled Binary
+6. 
+File will be  nano_firmware.ino.hex  → rename to  nano_firmware.hex 
