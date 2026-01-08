@@ -1,7 +1,7 @@
 {
-  "name": "Heat_Map_Corruption_Zone",
+  "name": "EXPERIMENTAL-Heat_Map_Corruption_Zone",
   "description": "Creates persistent false hot zone in heatmap analytics, corrupting customer behavior analysis",
-  "type": "data_injection",
+  "type": "EXPERIMENTAL-data_injection",
   "severity": "low",
   "sequence": [
     {"group": 4, "intensity": 150, "duration_ms": 10000, "jitter_percent": 15}
