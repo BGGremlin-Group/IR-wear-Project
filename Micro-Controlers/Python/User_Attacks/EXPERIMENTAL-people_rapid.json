@@ -1,0 +1,17 @@
+{
+  "name": "EXPERIMENTAL-People_Count_Rapid_Fire",
+  "description": "High-speed spoof injection for busy retail environments",
+  "type": "EXPERIMENTAL-data_injection",
+  "severity": "medium",
+  "sequence": [
+    {"group": 0, "intensity": 200, "duration_ms": 80, "jitter_percent": 15},
+    {"group": 1, "intensity": 200, "duration_ms": 120, "jitter_percent": 15},
+    {"group": 2, "intensity": 200, "duration_ms": 100, "jitter_percent": 15}
+  ],
+  "repeat": 5,
+  "target_cameras": ["RetailNext_Sensors", "ShopperTrak", "Brickstream_3D"],
+  "effective_range_meters": 1.8,
+  "power_consumption_watts": 6.0,
+  "expected_result": "Injects 3-5 phantom people per cycle. Overwhelms high-traffic counting algorithms.",
+  "limitations": "Only works on high-framerate analytics (15+ FPS). Static background subtraction may filter. Requires rapid repeat cycles."
+}
