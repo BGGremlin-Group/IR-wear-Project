@@ -1,0 +1,16 @@
+{
+  "name": "ALPR_Character_Corruption",
+  "description": "IR bloom on license plate characters causes OCR confidence drop below 90% threshold",
+  "type": "data_injection",
+  "severity": "medium",
+  "sequence": [
+    {"group": 0, "intensity": 220, "duration_ms": 500, "jitter_percent": 0}
+  ],
+  "repeat": 1,
+  "target_cameras": ["AXIS_LPR_Camera", "Hanwha_Wisenet_LPR", "Hikvision_LPR"],
+  "verified_on_hardware": ["AXIS_P1448_LPR", "Hanwha_XNO-6080R_LPR"],
+  "effective_range_meters": 4.0,
+  "power_consumption_watts": 12.0,
+  "expected_result": "ALPR OCR confidence drops below 90%, characters misread (B→8, O→0, S→5). Plate not logged in database. Gate does not open.",
+  "limitations": "Requires precise aiming at plate within +/-10 degrees. Reflective plates amplify effect. IR cut filter in day mode severely reduces effectiveness. Only works at night or low-light conditions."
+}
